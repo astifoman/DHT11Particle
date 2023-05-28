@@ -1,0 +1,25 @@
+#include <Adafruit_DHT.h>
+
+#define DHTPIN D2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  delay(30000); // Wait for 30 seconds
+
+  float temperature = dht.getTempCelcius();
+
+  if (!isnan(temperature)) {
+    char data[50];
+    snprintf(data, sizeof(data), "%.2f", temperature);
+    Particle.publish("temp", data);
+  } else {
+    Particle.publish("sensor_error", "Error reading data");
+  }
+}
